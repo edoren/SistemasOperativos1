@@ -1,0 +1,16 @@
+{
+    "gitbook": ">=2.0.0",
+
+    "title": "Sistemas Operativos 1",
+    "description": "",
+    "language": "es",
+
+    "structure": {
+        "readme": "introduccion.md"
+    },
+
+    "styles": {
+        "website": "styles/website.css"
+    }
+
+}
