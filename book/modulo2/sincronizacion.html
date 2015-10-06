@@ -8,7 +8,7 @@
         <title>Sincronización | Sistemas Operativos 1</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 2.3.3">
+        <meta name="generator" content="GitBook 2.4.3">
         
         
         <meta name="HandheldFriendly" content="true"/>
@@ -19,6 +19,10 @@
         <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
         
     <link rel="stylesheet" href="../../gitbook/style.css">
+    
+        
+        <link rel="stylesheet" href="../../gitbook/plugins/gitbook-plugin-highlight/website.css">
+        
     
     
         <link rel="stylesheet" href="../../styles/website.css">
@@ -36,22 +40,23 @@
     <body>
         
         
-    <div class="book" data-level="2.4" data-basepath="../.." data-revision="Thu Oct 01 2015 09:25:07 GMT-0500 (SA Pacific Standard Time)">
+    <div class="book" data-level="2.4" data-basepath="../.." data-revision="Mon Oct 05 2015 22:46:25 GMT-0500 (SA Pacific Standard Time)">
     
 
 <div class="book-summary">
-    <div class="book-search">
+    <div class="book-search" role="search">
         <input type="text" placeholder="Escribe para buscar" class="form-control" />
     </div>
-    <ul class="summary">
-        
-        
-        
-        
+    <nav role="navigation">
+        <ul class="summary">
+            
+            
+            
+            
 
-        
+            
 
-        
+            
     
         <li class="chapter " data-level="0" data-path="index.html">
             
@@ -215,20 +220,21 @@
     
 
 
-        
-        <li class="divider"></li>
-        <li>
-            <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
-                Publicado con GitBook
-            </a>
-        </li>
-        
-    </ul>
+            
+            <li class="divider"></li>
+            <li>
+                <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+                    Publicado con GitBook
+                </a>
+            </li>
+            
+        </ul>
+    </nav>
 </div>
 
     <div class="book-body">
         <div class="body-inner">
-            <div class="book-header">
+            <div class="book-header" role="navigation">
     <!-- Actions Left -->
     <a href="#" class="btn pull-left toggle-summary" aria-label="Tabla de contenido"><i class="fa fa-align-justify"></i></a>
     <a href="#" class="btn pull-left toggle-search" aria-label="Busca"><i class="fa fa-search"></i></a>
@@ -312,7 +318,7 @@
     </h1>
 </div>
 
-            <div class="page-wrapper" tabindex="-1">
+            <div class="page-wrapper" tabindex="-1" role="main">
                 <div class="page-inner">
                 
                 
@@ -500,6 +506,69 @@ anterioridad.</li>
     <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 }
 </code></pre>
+<p>El sem&#xE1;foro <code>huecos</code> representa el numero de ranuras libres que hay en el buffer
+y el sem&#xE1;foro <code>elementos</code> el n&#xFA;mero de elementos introducidos en el buffer por
+el productor que aun no han sido retirados por el consumidor.<br>Cuando el productor desea introducir un nuevo elemento en el buffer decrementa
+el valor del sem&#xE1;foro <code>huecos</code> (operaci&#xF3;n <code>wait</code>). Si el valor se hace negativo,
+el proceso se bloquea ya que no hay nuevos huecos donde insertar elementos.
+Cuando el productor ha insertado un nuevo dato en el buffer incrementa el valor
+del sem&#xE1;foro <code>elementos</code> (operaci&#xF3;n <code>signal</code>). Por su parte el proceso
+consumidor antes de eliminar del buffer un elemento decrementa el valor del
+sem&#xE1;foro <code>elementos</code> (operaci&#xF3;n <code>wait</code>). Si el valor se hace negativo, el
+proceso se bloquea. Cuando elimina del buffer un elemento incrementa el valor
+del sem&#xE1;foro <code>huecos</code> (operaci&#xF3;n <code>signal</code>). La correcta sincronizaci&#xF3;n entre los
+dos procesos queda asegurada puesto que cuando el proceso consumidor en la
+operaci&#xF3;n <code>wait</code> sobre el sem&#xE1;foro <code>elementos</code> se despertar&#xE1; cuando el proceso
+productor inserte un nuevo elemento en el buffer e incremente el valor de dicho
+sem&#xE1;foro con la operaci&#xF3;n <code>signal</code>. De igual manera cuando el proceso productor
+se bloquea por que el buffer esta vac&#xED;o se despertar&#xE1; cuando el proceso
+consumidor extraiga un elemento e incremente el valor del sem&#xE1;foro <code>huecos</code>.</p>
+<h2 id="el-problema-lectores-escritores">El Problema Lectores / Escritores</h2>
+<pre><code class="lang-c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">lector</span><span class="hljs-params">()</span> </span>{
+    n_lectores++;
+    <span class="hljs-keyword">if</span> (n_lectores == <span class="hljs-number">1</span>) {
+        wait(sem_recurso);
+    }
+    signal(sem_lectura);
+    <span class="hljs-comment">// Consultar recurso compartido</span>
+    wait(sem_lectura);
+    n_lectores--;
+    <span class="hljs-keyword">if</span> (n_lectores == <span class="hljs-number">0</span>) {
+        signal(sem_recurso);
+    }
+    signal(sem_lectores)
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">escritor</span><span class="hljs-params">()</span> </span>{
+    wait(sem_recurso);
+    <span class="hljs-comment">// Se puede modificar el recurso</span>
+    signal(sem_recurso);
+}
+</code></pre>
+<p>En esta soluci&#xF3;n, el sem&#xE1;foro <code>sem_recurso</code> se utiliza para asegurar la
+exclusi&#xF3;n mutua en el acceso al dato a compartir. Su valor inicial debe ser 1,
+de esta manera en cuanto un escritor consigue decrementar su valor puede
+modificar el dato y evitar que ning&#xFA;n otro proceso, ni lector ni escritor acceda
+al recurso compartido.<br>La variable <code>n_lectores</code> se utiliza para representar el n&#xFA;mero de procesos
+lectores que se encuentran accediendo de forma simult&#xE1;nea al recurso compartido.
+A esta variable acceden los procesos lectores en exclusi&#xF3;n mutua utilizando el
+sem&#xE1;foro <code>sem_lectores</code>. El valor de este sem&#xE1;foro, como el del cualquier otro
+que se quiera emplear para acceder en exclusi&#xF3;n mutua a un fragmento de c&#xF3;digo
+debe ser 1. De esta forma se consigue que s&#xF3;lo un proceso lector modifique el
+valor de la variable <code>n_lectores</code>.<br>El primer proceso lector ser&#xE1; el encargado de solicitar el acceso al recurso
+compartido decrementando el valor del sem&#xE1;foro <code>sem_recurso</code> mediante la
+operaci&#xF3;n <code>wait</code>. El resto de procesos lectores que quieran acceder mientras
+est&#xE9; el primero podr&#xE1;n hacerlo sin necesidad de solicitar el acceso al recurso
+compartido. Cuando el ultimo proceso lector abandona la secci&#xF3;n de c&#xF3;digo que
+permite acceder al recurso compartido <code>n_lectores</code> se hace 0. En este caso
+deber&#xE1; incrementar el valor del sem&#xE1;foro <code>sem_recurso</code> para permitir que
+cualquier proceso escritor pueda acceder para modificar el recurso compartido.<br>Esta soluci&#xF3;n, tal y como se ha descrito, permite resolver el problema de los
+lectores/escritores pero concede prioridad a los procesos lectores. Siempre que
+haya un proceso lector, consultando el valor del recurso, cualquier proceso
+lector podr&#xE1; acceder sin necesidad de solicitar el acceso. Sin embargo, los
+procesos escritores deber&#xE1;n esperar hasta que haya abandonado la consulta el
+ultimo lector. Existen soluciones que permiten dar prioridad a los escritores,
+soluciones que se dejan al lector.</p>
 
                     
                     </section>
