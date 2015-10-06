@@ -114,6 +114,7 @@ sistemas con memoria compartida bien sea monoprocesador o multiprocesador. Un
 semáforo es un objeto con valor entero al que se puede asignar un valor inicial
 no negativo y al que solo se puede acceder utilizando dos operaciones atómicas
 `wait` y `signal`. Las definiciones de estas operaciones son las siguientes.
+
 ```c
 int wait(int s) {
     s = s - 1;
@@ -145,6 +146,7 @@ anterior, se desbloqueara a un solo proceso.
 ### Solución Del Problema De Sección Critica Para Tres Procesos
 Para resolver el problema de la sección crítica, utilizando semáforos debemos
 proteger el código que constituye la sección critica de la siguiente forma:
+
 ```c
 int wait(int s) {
     // Sección crítica
@@ -208,3 +210,75 @@ int consumidor() {
     return 0;
 }
 ```
+
+El semáforo `huecos` representa el numero de ranuras libres que hay en el buffer
+y el semáforo `elementos` el número de elementos introducidos en el buffer por
+el productor que aun no han sido retirados por el consumidor.  
+Cuando el productor desea introducir un nuevo elemento en el buffer decrementa
+el valor del semáforo `huecos` (operación `wait`). Si el valor se hace negativo,
+el proceso se bloquea ya que no hay nuevos huecos donde insertar elementos.
+Cuando el productor ha insertado un nuevo dato en el buffer incrementa el valor
+del semáforo `elementos` (operación `signal`). Por su parte el proceso
+consumidor antes de eliminar del buffer un elemento decrementa el valor del
+semáforo `elementos` (operación `wait`). Si el valor se hace negativo, el
+proceso se bloquea. Cuando elimina del buffer un elemento incrementa el valor
+del semáforo `huecos` (operación `signal`). La correcta sincronización entre los
+dos procesos queda asegurada puesto que cuando el proceso consumidor en la
+operación `wait` sobre el semáforo `elementos` se despertará cuando el proceso
+productor inserte un nuevo elemento en el buffer e incremente el valor de dicho
+semáforo con la operación `signal`. De igual manera cuando el proceso productor
+se bloquea por que el buffer esta vacío se despertará cuando el proceso
+consumidor extraiga un elemento e incremente el valor del semáforo `huecos`.
+
+## El Problema Lectores / Escritores
+
+```c
+int lector() {
+    n_lectores++;
+    if (n_lectores == 1) {
+        wait(sem_recurso);
+    }
+    signal(sem_lectura);
+    // Consultar recurso compartido
+    wait(sem_lectura);
+    n_lectores--;
+    if (n_lectores == 0) {
+        signal(sem_recurso);
+    }
+    signal(sem_lectores)
+}
+
+int escritor() {
+    wait(sem_recurso);
+    // Se puede modificar el recurso
+    signal(sem_recurso);
+}
+```
+
+En esta solución, el semáforo `sem_recurso` se utiliza para asegurar la
+exclusión mutua en el acceso al dato a compartir. Su valor inicial debe ser 1,
+de esta manera en cuanto un escritor consigue decrementar su valor puede
+modificar el dato y evitar que ningún otro proceso, ni lector ni escritor acceda
+al recurso compartido.  
+La variable `n_lectores` se utiliza para representar el número de procesos
+lectores que se encuentran accediendo de forma simultánea al recurso compartido.
+A esta variable acceden los procesos lectores en exclusión mutua utilizando el
+semáforo `sem_lectores`. El valor de este semáforo, como el del cualquier otro
+que se quiera emplear para acceder en exclusión mutua a un fragmento de código
+debe ser 1. De esta forma se consigue que sólo un proceso lector modifique el
+valor de la variable `n_lectores`.  
+El primer proceso lector será el encargado de solicitar el acceso al recurso
+compartido decrementando el valor del semáforo `sem_recurso` mediante la
+operación `wait`. El resto de procesos lectores que quieran acceder mientras
+esté el primero podrán hacerlo sin necesidad de solicitar el acceso al recurso
+compartido. Cuando el ultimo proceso lector abandona la sección de código que
+permite acceder al recurso compartido `n_lectores` se hace 0. En este caso
+deberá incrementar el valor del semáforo `sem_recurso` para permitir que
+cualquier proceso escritor pueda acceder para modificar el recurso compartido.  
+Esta solución, tal y como se ha descrito, permite resolver el problema de los
+lectores/escritores pero concede prioridad a los procesos lectores. Siempre que
+haya un proceso lector, consultando el valor del recurso, cualquier proceso
+lector podrá acceder sin necesidad de solicitar el acceso. Sin embargo, los
+procesos escritores deberán esperar hasta que haya abandonado la consulta el
+ultimo lector. Existen soluciones que permiten dar prioridad a los escritores,
+soluciones que se dejan al lector.
