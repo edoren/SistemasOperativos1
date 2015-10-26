@@ -5,7 +5,7 @@
         
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>Modulo 1: Evolución De Los Sistemas Operativos | Sistemas Operativos 1</title>
+        <title>Modulo 3: El Administrador De Memoria | Sistemas Operativos 1</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 2.4.3">
@@ -31,10 +31,10 @@
         
     
     
-    <link rel="next" href="../../book/modulo1/generacion_primera_segunda.html" />
+    <link rel="next" href="../../book/modulo3/memoria_virtual.html" />
     
     
-    <link rel="prev" href="../../index.html" />
+    <link rel="prev" href="../../book/modulo2/sincronizacion.html" />
     
 
         
@@ -42,7 +42,7 @@
     <body>
         
         
-    <div class="book" data-level="1" data-basepath="../.." data-revision="Mon Oct 05 2015 22:46:25 GMT-0500 (SA Pacific Standard Time)">
+    <div class="book" data-level="3" data-basepath="../.." data-revision="Mon Oct 26 2015 07:30:21 GMT-0500 (SA Pacific Standard Time)">
     
 
 <div class="book-summary">
@@ -73,10 +73,10 @@
             
         </li>
     
-        <li class="chapter active" data-level="1" data-path="book/modulo1/index.html">
+        <li class="chapter " data-level="1" data-path="book/modulo1/evolucion_so.html">
             
                 
-                    <a href="../../book/modulo1/index.html">
+                    <a href="../../book/modulo1/evolucion_so.html">
                 
                         <i class="fa fa-check"></i>
                         
@@ -139,17 +139,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2" data-path="book/modulo2/index.html">
+        <li class="chapter " data-level="2" data-path="book/modulo2/intro_admin_procesos.html">
             
-                
-                    <a href="../../book/modulo2/index.html">
-                
-                        <i class="fa fa-check"></i>
-                        
-                            <b>2.</b>
-                        
-                        Modulo 2: El Administrador De Procesos
-                    </a>
+            <span><b>2.</b> Modulo 2: El Administrador De Procesos</span>
             
             
             <ul class="articles">
@@ -217,6 +209,57 @@
     
 
             </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="3" data-path="book/modulo3/administrador_memoria.html">
+            
+                
+                    <a href="../../book/modulo3/administrador_memoria.html">
+                
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                        Modulo 3: El Administrador De Memoria
+                    </a>
+            
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.1" data-path="book/modulo3/memoria_virtual.html">
+            
+                
+                    <a href="../../book/modulo3/memoria_virtual.html">
+                
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.</b>
+                        
+                        Memoria Virtual
+                    </a>
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4" data-path="book/modulo4/administrador_io.html">
+            
+                
+                    <a href="../../book/modulo4/administrador_io.html">
+                
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                        Modulo 4: El Administrador I/O
+                    </a>
+            
             
         </li>
     
@@ -326,7 +369,34 @@
                 
                     <section class="normal" id="section-">
                     
-                        <h1 id="modulo-1-evoluci%C3%B3n-de-los-sistemas-operativos">Modulo 1: Evoluci&#xF3;n De Los Sistemas Operativos</h1>
+                        <h1 id="el-administrador-de-memoria">El Administrador De Memoria</h1>
+<p>Es la parte del SO que se encarga de administrar la memoria y su labor consiste
+en:</p>
+<ul>
+<li>Llevar un registro de las partes de memoria que se est&#xE1;n utilizando y aquellas
+que no.</li>
+<li>Asignar espacio de memoria a los procesos cuando estos la necesiten.</li>
+<li>Liberarla cuando los procesos terminen.</li>
+<li>Administrar intercambio entre memoria principal y secundaria.</li>
+</ul>
+<p>Un ejemplo de jerarqu&#xED;a de memoria:  </p>
+<ol>
+<li>Cache nivel 1 (KiB): Empaquetados dentro del chip, por lo tanto su velocidad
+de acceso es de nanosegundos.</li>
+<li>Cache nivel 2 (KiB): 12ns - 20ns</li>
+<li>Memoria principal (RAM) (GiB): 70ns</li>
+<li>Memoria secundaria (TiB): Almacenamiento permanente y para extender la
+memoria principal.</li>
+</ol>
+<h2 id="administraci%C3%B3n-en-monoprogramaci%C3%B3n">Administraci&#xF3;n En Monoprogramaci&#xF3;n</h2>
+<p>Es la forma m&#xE1;s simple de administrar memoria, consiste en ejecutar solo un
+programa, compartiendo la memoria con el SO. Cuando el usuario digita un comando
+el usuario carga el programa respectivo en la memoria y lo ejecuta. Luego,
+cuando el programa termina, el SO solicita un nuevo comando y carga el nuevo
+programa a la memoria, sobrescribiendo el anterior.</p>
+<h2 id="administraci%C3%B3n-en-multiprogramaci%C3%B3n">Administraci&#xF3;n En Multiprogramaci&#xF3;n</h2>
+<h3 id="particiones-fijas">Particiones Fijas</h3>
+<h1 id="falta-algo">FALTA ALGO</h1>
 
                     
                     </section>
@@ -337,10 +407,10 @@
         </div>
 
         
-        <a href="../../index.html" class="navigation navigation-prev " aria-label="Previous page: Introducción"><i class="fa fa-angle-left"></i></a>
+        <a href="../../book/modulo2/sincronizacion.html" class="navigation navigation-prev " aria-label="Previous page: Sincronización"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../../book/modulo1/generacion_primera_segunda.html" class="navigation navigation-next " aria-label="Next page: Primera Y Segunda Generación"><i class="fa fa-angle-right"></i></a>
+        <a href="../../book/modulo3/memoria_virtual.html" class="navigation navigation-next " aria-label="Next page: Memoria Virtual"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>

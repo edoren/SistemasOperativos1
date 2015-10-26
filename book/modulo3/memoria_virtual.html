@@ -5,7 +5,7 @@
         
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>El Despachador | Sistemas Operativos 1</title>
+        <title>Memoria Virtual | Sistemas Operativos 1</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 2.4.3">
@@ -31,10 +31,10 @@
         
     
     
-    <link rel="next" href="../../book/modulo2/sincronizacion.html" />
+    <link rel="next" href="../../book/modulo4/administrador_io.html" />
     
     
-    <link rel="prev" href="../../book/modulo2/administrador_procesos.html" />
+    <link rel="prev" href="../../book/modulo3/administrador_memoria.html" />
     
 
         
@@ -42,7 +42,7 @@
     <body>
         
         
-    <div class="book" data-level="2.3" data-basepath="../.." data-revision="Mon Oct 26 2015 07:30:21 GMT-0500 (SA Pacific Standard Time)">
+    <div class="book" data-level="3.1" data-basepath="../.." data-revision="Mon Oct 26 2015 07:30:21 GMT-0500 (SA Pacific Standard Time)">
     
 
 <div class="book-summary">
@@ -177,7 +177,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="2.3" data-path="book/modulo2/el_despachador.html">
+        <li class="chapter " data-level="2.3" data-path="book/modulo2/el_despachador.html">
             
                 
                     <a href="../../book/modulo2/el_despachador.html">
@@ -228,7 +228,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="3.1" data-path="book/modulo3/memoria_virtual.html">
+        <li class="chapter active" data-level="3.1" data-path="book/modulo3/memoria_virtual.html">
             
                 
                     <a href="../../book/modulo3/memoria_virtual.html">
@@ -369,198 +369,51 @@
                 
                     <section class="normal" id="section-">
                     
-                        <h1 id="el-despachador">El Despachador</h1>
-<p>Cuando hay m&#xE1;s de un proceso que esa en condiciones de ejecutar en la CPU, se
-debe escoger alguno. El encargado de tomar esta decisi&#xF3;n es el despachador
-(Planificador / Scheduler) y el algoritmo que usa se llama &quot;El algoritmo de
-despacho (planificaci&#xF3;n)&quot;.</p>
-<h2 id="posibles-objetivos-algunos-contradictores-de-un-algoritmo-de-despacho">Posibles Objetivos (Algunos Contradictores) De Un Algoritmo De Despacho</h2>
-<ol>
-<li><strong>Justicia:</strong>
-Asegurarse que todos los procesos tengan su turno en CPU.</li>
-<li><strong>Eficiencia:</strong>
-Mantener la CPU ocupada todo el tiempo.</li>
-<li><strong>Tiempo de respuesta:</strong>
-Minimizar el tiempo de respuesta de los usuarios inactivos.</li>
-<li><strong>Rendimiento productividad:</strong>
-(Troughput) Maximizar el numero de trabajos terminados por unidad de tiempo.</li>
-<li><strong>Tiempo de espera:</strong>
-Minimizar el tiempo medio de espera (en la cola ready) de los procesos.
-Tiempo transcurrido entre llegar y ser atendido.</li>
-</ol>
-<p>Una complicaci&#xF3;n adicional que hay que tener en cuenta es que cada proceso es
-&#xFA;nico e impredecible. Algunos son intensivos en I/O  otros son intensivos en
-CPU. En cualquier caso todos los proceso alternan entre una fase de ejecuci&#xF3;n
-de CPU y la otra de espera por I/O. Aunque la duraci&#xF3;n de las fases de CPU, es
-impredecible y varia mucho entre un proceso y otro, &#xBF;que dice el siguiente
-gr&#xE1;fico estad&#xED;stico?; el cual puede ser muy importante a la hora de tomar una
-decisi&#xF3;n.</p>
-<p><img src="../../images/modulo2/time_in_cpu.jpg" alt="Tiempo En CPU"></p>
-<h2 id="%C2%BFcuando-hay-que-planificar-%C2%BFcuando-trabaja-el-algoritmo">&#xBF;Cuando hay que planificar? &#xBF;Cuando trabaja el algoritmo?</h2>
-<p><img src="../../images/modulo2/execution_steps.jpg" alt="Pasos Ejecuci&#xF3;n"></p>
-<p>En los casos 1 y 2 necesariamente hay que escoger un nuevo proceso (CPU
-desocupada), pero en los casos 3 y 4 podr&#xED;a no tomarse ninguna decisi&#xF3;n de
-Scheduling. &#xBF;Por que?</p>
-<p>&#xBF;Problemas de planificaci&#xF3;n expropiadora? Suponga dos procesos que comparten un
-recurso. En el momento en el que uno de los procesos esta modificando el
-recurso compartido le quitamos CPU y no alcanza a modificar. El otro proceso
-encontrar&#xED;a una variable mal actualizada.</p>
-<h2 id="algoritmos-de-despacho">Algoritmos De Despacho</h2>
+                        <h1 id="memoria-virtual">Memoria Virtual</h1>
+<p>Cando hablamos de extender la memoria de manera virtual estamos hablando de
+hacer que el proceso tenga la ilusi&#xF3;n de que la memoria es mucho mas grande
+que la memoria f&#xED;sica (&#xF3; que el trozo de memoria f&#xED;sica que le corresponde en
+el caso de multiprogramaci&#xF3;n). El sistema operativo se encarga de mantener en
+memoria los trozos (p&#xE1;ginas) que el proceso esta usando y el resto en el disco.
+Puesto que el disco es barato podemos tener espacio de direccionamiento
+ilimitado (enorme).</p>
+<h2 id="paginaci%C3%B3n-por-demanda">Paginaci&#xF3;n Por Demanda</h2>
+<p>Memoria virtual se implementa con un poco de ayuda del hardware, agregamos un
+bit a la tabla de p&#xE1;ginas que indica si la paginaci&#xF3;n en cuesti&#xF3;n es: Valida
+(cargada en memoria) o Invalida (no cargada en memoria).</p>
+<p><img src="../../images/modulo3/paginas.png" alt="P&#xE1;ginas"></p>
+<p>El acceso a las p&#xE1;ginas v&#xE1;lidas funciona igual que antes, pero si la CPU intenta
+accesar a una p&#xE1;gina invalida se produce una FALTA DE PAGINA que genera un TROP
+al SO que debe encargarse de buscar esa  p&#xE1;gina en disco, ponerla en la memoria
+y reanudar el proceso. En detalle el SO hace:</p>
 <ul>
-<li>No expropiadores: FCFS, SJF</li>
-<li>Expropiadores: Basado En Prioridad, Round Robin</li>
+<li>Bloquear el proceso.</li>
+<li>Buscar la pagina en disco para subirla a memoria.<ul>
+<li>Hay un marco libre. SI NO HAY, GENERARLO</li>
+<li>Ordenar al controlador la lectura / escritura.</li>
+<li>Cargar en memoria.</li>
 </ul>
-<h3 id="first-come-first-serve-fcfs">First Come, First Serve (FCFS)</h3>
+</li>
+<li>Reanudar el proceso (listo).</li>
+</ul>
+<p>Que hemos ganado:</p>
 <ul>
-<li>Los trabajos son ejecutados a medida que llegan. El primero que llega el
-el primero en ser atendido.</li>
-<li>F&#xE1;cil de entender e implementar.</li>
-<li>Bajo en rendimiento ya que el tiempo promedio de espera es muy alto.</li>
+<li>No se requiere superposiciones para ejecutar programas grandes.</li>
+<li>Solo cargamos las partes del programa que se usan. Reduciendo cestos de
+lectura en el disco.</li>
+<li>Podemos aumentar la multiprogramaci&#xF3;n?</li>
+<li>Un proceso puede ser mayor que la memoria?</li>
+<li>Permite transferencia de informaci&#xF3;n entre memoria principal y secundaria.</li>
 </ul>
-<p><strong>Ejemplo:</strong></p>
-<p><img src="../../images/modulo2/fcfs.jpg" alt="Algoritmo FCFS"></p>
-<p>El tiempo de espera de cada proceso es el siguiente:</p>
-<table>
-<thead>
-<tr>
-<th>Proceso</th>
-<th>TiempoServicio - TiempoLlegada = TiempoEspera</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>P0</td>
-<td>0 - 0 = 0</td>
-</tr>
-<tr>
-<td>P1</td>
-<td>5 - 1 = 4</td>
-</tr>
-<tr>
-<td>P2</td>
-<td>8 - 2 = 6</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>16 - 3 = 13</td>
-</tr>
-</tbody>
-</table>
-<p>Tiempo promedio de espera: (0+4+6+13) / 4 = 5.55</p>
-<h3 id="shortest-job-first-sjf">Shortest Job First (SJF)</h3>
+<p><img src="../../images/modulo3/mp_swap.png" alt="MP&lt;-&gt;SWAP"></p>
+<p><strong>Primera Regla:</strong> Tama&#xF1;o SWAP =&gt; Tama&#xF1;o RAM<br>El tama&#xF1;o depende de:</p>
 <ul>
-<li>El mejor algoritmo para mejorar el rendimiento.</li>
-<li>Imposible implementar.</li>
-<li>El procesador debe saber con anterioridad cuanto tiempo los procesos se van a
-demorar.</li>
+<li>Tama&#xF1;o de la RAM.</li>
+<li>Cantidad de usuarios.</li>
+<li>Cantidad de aplicativos.</li>
 </ul>
-<p><strong>Ejemplo:</strong></p>
-<p><img src="../../images/modulo2/sjf.jpg" alt="Algoritmo SJF"></p>
-<p>El tiempo de espera de cada proceso es el siguiente:</p>
-<table>
-<thead>
-<tr>
-<th>Proceso</th>
-<th>TiempoServicio - TiempoLlegada = TiempoEspera</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>P0</td>
-<td>3 - 0 = 3</td>
-</tr>
-<tr>
-<td>P1</td>
-<td>0 - 0 = 0</td>
-</tr>
-<tr>
-<td>P2</td>
-<td>16 - 2 = 14</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>8 - 3 = 5</td>
-</tr>
-</tbody>
-</table>
-<p>Tiempo promedio de espera: (3+0+14+5) / 4 = 5.50</p>
-<h3 id="basado-en-prioridad">Basado En Prioridad</h3>
-<ul>
-<li>Cada proceso se le es asignada una prioridad. Los procesos son ejecutados del
-mayor a menor prioridad.</li>
-<li>Si dos procesos tiene igual prioridad el que llega primero es el primero en
-ser atendido.</li>
-<li>La prioridad puede ser decidida basada en cuanta memoria, tiempo de ejecuci&#xF3;n,
-o requerimiento de recursos necesita el programa.</li>
-</ul>
-<p><strong>Ejemplo:</strong></p>
-<p><img src="../../images/modulo2/priority.jpg" alt="Algoritmo Basado En Prioridad"></p>
-<p>El tiempo de espera de cada proceso es el siguiente:</p>
-<table>
-<thead>
-<tr>
-<th>Proceso</th>
-<th>TiempoServicio - TiempoLlegada = TiempoEspera</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>P0</td>
-<td>9 - 0 = 9</td>
-</tr>
-<tr>
-<td>P1</td>
-<td>6 - 1 = 5</td>
-</tr>
-<tr>
-<td>P2</td>
-<td>14 - 2 = 12</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>0 - 0 = 0</td>
-</tr>
-</tbody>
-</table>
-<p>Tiempo promedio de espera: (9+5+12+0) / 4 = 6.5</p>
-<h3 id="round-robin">Round Robin</h3>
-<ul>
-<li>Cada proceso se le es dado un tiempo fijo de ejecuci&#xF3;n llamado Quantum.</li>
-<li>Una vez que un proceso es ejecutado por cierto tiempo (Quantum). El proceso
-es precedido, y otro proceso es ejecutado por el mismo tiempo.</li>
-<li>El cambio de contexto es usado para guardar los estados de los procesos
-precedidos.</li>
-</ul>
-<p><strong>Ejemplo:</strong></p>
-<p><img src="../../images/modulo2/round_robin.jpg" alt="Algoritmo Round Robin"></p>
-<p>El tiempo de espera de cada proceso es el siguiente:</p>
-<table>
-<thead>
-<tr>
-<th>Proceso</th>
-<th>TiempoServicio - TiempoLlegada = TiempoEspera</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>P0</td>
-<td>(0 - 0) + (12 - 3) = 9</td>
-</tr>
-<tr>
-<td>P1</td>
-<td>(3 - 1) = 2</td>
-</tr>
-<tr>
-<td>P2</td>
-<td>(6 - 2) + (14 - 9) + (20 - 17) = 12</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>(9 - 3) + (17 - 12) = 11</td>
-</tr>
-</tbody>
-</table>
-<p>Tiempo promedio de espera: (9+2+12+11) / 4 = 8.5</p>
+<h2 id="algoritmo-de-remplazo-de-p%C3%A1ginas">Algoritmo De Remplazo De P&#xE1;ginas</h2>
+<p><img src="../../images/modulo3/algoritmos_remplazo_paginas.png" alt="Algoritmos"></p>
 
                     
                     </section>
@@ -571,10 +424,10 @@ precedidos.</li>
         </div>
 
         
-        <a href="../../book/modulo2/administrador_procesos.html" class="navigation navigation-prev " aria-label="Previous page: El Administrador De Procesos"><i class="fa fa-angle-left"></i></a>
+        <a href="../../book/modulo3/administrador_memoria.html" class="navigation navigation-prev " aria-label="Previous page: Modulo 3: El Administrador De Memoria"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../../book/modulo2/sincronizacion.html" class="navigation navigation-next " aria-label="Next page: Sincronización"><i class="fa fa-angle-right"></i></a>
+        <a href="../../book/modulo4/administrador_io.html" class="navigation navigation-next " aria-label="Next page: Modulo 4: El Administrador I/O"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>
